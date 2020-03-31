@@ -1,14 +1,20 @@
 import numpy as np
+# import astropy
 from astropy.table import Table
 from astropy.io import ascii
 import argparse
+import pandas as pd
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-file', default=None, required=True)
 args = parser.parse_args()
 fil = args.file
 
-data = ascii.read(fil, format='csv',delimiter=',')
+try:
+	data = ascii.read(fil, format='csv',delimiter=',')
+except:
+	data = pd.read_excel(fil)
+	data = Table.from_pandas(data)
 
 print('The column names: ')
 print(data.colnames)
@@ -75,7 +81,6 @@ notes = np.array([name for name in data['Notes']])
 # unique_affiliations is a list of unique affilitations (not sorted by which was first)
 # indexes is a list of indexes of where each aff is found first (not sorted)
 unique_affiliations, indexes = np.unique(affiliations, return_index=True)
-print(unique_affiliations)
 # sort the indexes to create a sorted affiliation list
 indexes_sorted = np.sort(indexes)
 unique_affiliations_sorted = []
